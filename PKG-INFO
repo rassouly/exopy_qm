@@ -1,0 +1,16 @@
+Metadata-Version: 1.1
+Name: exopy_qm
+Version: 0.0.51-22-gfc0baed.dirty
+Summary: QM Exopy package
+Home-page: https://quantum-machines.co
+Author: Michael Greenbaum
+Author-email: michael@quantum-machines.co
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Programming Language :: Python :: 3.6
