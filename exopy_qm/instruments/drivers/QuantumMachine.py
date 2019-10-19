@@ -11,14 +11,14 @@ class QuantumMachine(object):
         self.connection_info = connection_info
 
         port = ""
-        if self.connection_info["gateway_port"] is not None and self.connection_info["gateway_port"] is not "":
+        if self.connection_info["gateway_port"] is not None and self.connection_info["gateway_port"] != "":
             port = self.connection_info["gateway_port"]
 
         ip = ""
-        if self.connection_info["gateway_ip"] is not None and self.connection_info["gateway_ip"] is not "":
+        if self.connection_info["gateway_ip"] is not None and self.connection_info["gateway_ip"] != "":
             ip = self.connection_info["gateway_ip"]
 
-        if ip is not "" and port is not "":
+        if ip != "" and port != "":
             self.qmm = QuantumMachinesManager(host=ip, port=port)
         else:
             self.qmm = QuantumMachinesManager()
@@ -56,6 +56,9 @@ class QuantumMachine(object):
 
     def close_connection(self):
         self.qmObj.close()
+
+    def set_config(self, config):
+        self.qmObj = self.qmm.open_qm(config)
 
     def execute_program(self, prog, duration_limit, data_limit):
         self.job = self.qmObj.execute(prog, duration_limit=duration_limit, data_limit=data_limit)

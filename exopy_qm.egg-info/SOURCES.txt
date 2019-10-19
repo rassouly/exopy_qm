@@ -1,3 +1,4 @@
+README.md
 VERSION
 setup.cfg
 setup.py
@@ -30,6 +31,7 @@ exopy_qm/tasks/tasks/SetInputDcOffsetByQeTask.py
 exopy_qm/tasks/tasks/SetIntermediateFrequencyTask.py
 exopy_qm/tasks/tasks/SetMixerCorrectionTask.py
 exopy_qm/tasks/tasks/SetOutputDcOffsetByQeTask.py
+exopy_qm/tasks/tasks/SetQMConfigTask.py
 exopy_qm/tasks/tasks/__init__.py
 exopy_qm/tasks/tasks/views/ExecuteProgramView.enaml
 exopy_qm/tasks/tasks/views/GetIOValuesView.enaml
@@ -42,6 +44,7 @@ exopy_qm/tasks/tasks/views/SetInputDcOffsetByQeView.enaml
 exopy_qm/tasks/tasks/views/SetIntermediateFrequencyView.enaml
 exopy_qm/tasks/tasks/views/SetMixerCorrectionView.enaml
 exopy_qm/tasks/tasks/views/SetOutputDcOffsetByQeView.enaml
+exopy_qm/tasks/tasks/views/SetQMConfigView.enaml
 exopy_qm/tasks/tasks/views/__init__.py
 exopy_qm/tasks/tasks/views/base_instr_view.enaml
 exopy_qm/utils/__init__.py

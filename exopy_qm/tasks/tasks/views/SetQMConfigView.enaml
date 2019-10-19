@@ -1,0 +1,35 @@
+from textwrap import fill
+
+from enaml.widgets.api import (Label, Field, ToolButton, FileDialogEx)
+from enaml.stdlib.fields import Field
+from enaml.layout.api import factory, grid
+from exopy.app.icons.api import get_icon
+
+from exopy_qm.utils.layouts import auto_grid_layout
+from .base_instr_view import InstrView
+
+
+enamldef SetQMConfigView(InstrView): view:
+    """View for the SetQMConfigTask.
+
+    """
+    constraints = [factory(auto_grid_layout)]
+
+    Label: path_label:
+        text = "Path to config file"
+    Field: path_val:
+        text := task.path_to_config_file
+        tool_tip = fill("Path to config file. The file must contain a function get_config() which returns the config dictionary")
+
+    Label:
+        text = ""
+
+    ToolButton: path_exp:
+        hug_width = 'strong'
+        icon = get_icon(workbench, 'folder-open')
+        #text = 'E'
+        clicked ::
+            filter =['*.py']
+            path = FileDialogEx.get_open_file_name(name_filters=filter)
+            if path:
+                path_val.text = path
