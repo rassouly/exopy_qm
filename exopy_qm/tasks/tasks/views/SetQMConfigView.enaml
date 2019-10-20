@@ -1,19 +1,37 @@
 from textwrap import fill
 
-from enaml.widgets.api import (Label, Field, ToolButton, FileDialogEx)
+import importlib
+
+from enaml.core.api import Looper
+from enaml.widgets.api import (Label, Field, ToolButton, FileDialogEx, Container,
+                               PushButton)
 from enaml.stdlib.fields import Field
-from enaml.layout.api import factory, grid
+from enaml.layout.api import hbox, vbox, spacer, align
 from exopy.app.icons.api import get_icon
 
-from exopy_qm.utils.layouts import auto_grid_layout
 from .base_instr_view import InstrView
+from exopy_qm.utils.dynamic_importer import *
+
+
+def get_param_from_file(path_to_config_file):
+    directory = get_directory_from_path(path_to_config_file)
+    module_name = get_module_name_from_path(path_to_config_file)
+    sys.path.append(directory)
+
+    module_with_config = importlib.import_module(module_name)
+    module_with_config = importlib.reload(module_with_config)
+
+    return module_with_config.get_parameters()
 
 
 enamldef SetQMConfigView(InstrView): view:
     """View for the SetQMConfigTask.
 
     """
-    constraints = [factory(auto_grid_layout)]
+    constraints << [vbox(hbox(instr_label, path_label, spacer),
+                         hbox(instr_selection, path_val, path_exp, refresh),
+                         param_list),
+                    align('left', path_label, path_val)]
 
     Label: path_label:
         text = "Path to config file"
@@ -21,15 +39,32 @@ enamldef SetQMConfigView(InstrView): view:
         text := task.path_to_config_file
         tool_tip = fill("Path to config file. The file must contain a function get_config() which returns the config dictionary")
 
-    Label:
-        text = ""
-
     ToolButton: path_exp:
         hug_width = 'strong'
         icon = get_icon(workbench, 'folder-open')
-        #text = 'E'
         clicked ::
             filter =['*.py']
             path = FileDialogEx.get_open_file_name(name_filters=filter)
             if path:
                 path_val.text = path
+
+    PushButton: refresh:
+        text = 'Refresh'
+        clicked ::
+            tmp = path_val.text
+            path_val.text = ''
+            path_val.text = tmp
+
+    Container: param_list:
+        Looper:
+            iterable << task.parameters
+            Container:
+                constraints = [hbox(label_loop, field_loop, label_comment),
+                               align('v_center', label_loop, field_loop, label_comment)]
+                padding = 2
+                Label: label_loop:
+                    text = loop_item
+                Field: field_loop:
+                    text := task.parameters[loop_item]
+                Label: label_comment:
+                    text = task.comments[loop_item]
