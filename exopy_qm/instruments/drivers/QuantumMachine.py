@@ -1,9 +1,5 @@
-import importlib
-import sys
 from qm.QuantumMachinesManager import QuantumMachinesManager
 from qm.qua import *
-
-from exopy_qm.utils.dynamic_importer import *
 
 
 class QuantumMachine(object):
@@ -23,19 +19,8 @@ class QuantumMachine(object):
         else:
             self.qmm = QuantumMachinesManager()
 
-        self.qmObj = self.qmm.open_qm(self.__get_config())
+        self.qmObj = None
         self.job = None
-
-    def __get_config(self):
-        config_file_path = self.connection_info["config_file_path"]
-        directory = get_directory_from_path(config_file_path)
-        module_name = get_module_name_from_path(config_file_path)
-
-        sys.path.append(directory)
-
-        module_with_config = importlib.import_module(module_name)
-        module_with_config = importlib.reload(module_with_config)
-        return module_with_config.get_config()
 
     def connect(self):
         """
@@ -55,7 +40,8 @@ class QuantumMachine(object):
         return True
 
     def close_connection(self):
-        self.qmObj.close()
+        if self.qmObj:
+            self.qmObj.close()
 
     def set_config(self, config):
         self.qmObj = self.qmm.open_qm(config)
