@@ -17,11 +17,10 @@ class SetQMConfigTask(InstrumentTask):
     path_to_config_file = Unicode().tag(pref=True)
 
     #: Dictionary containing all the parameters used in the configuration
-    parameters = Typed(dict)
+    parameters = Typed(dict).tag(pref=True)
 
     #: Dictionary containing all the parameters used in the configuration
-    comments = Typed(dict)
-
+    comments = Typed(dict).tag(pref=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -30,7 +29,6 @@ class SetQMConfigTask(InstrumentTask):
         self.parameters = {}
         self.comments = {}
 
-        print('New config file: {}'.format(new))
         if new:
             try:
                 importlib.invalidate_caches()
@@ -44,8 +42,6 @@ class SetQMConfigTask(InstrumentTask):
 
                 params = module_with_config.get_parameters()
 
-                print(params)
-
                 tmp = {}  # Temporary dict to avoid updating the view needlessly
                 # find the default values and comments
                 for i in params:
@@ -57,7 +53,6 @@ class SetQMConfigTask(InstrumentTask):
                         self.comments[i] = str(params[i][1])
                 self.parameters = tmp
 
-                print(self.parameters)
             except:
                 print('Config cannot be loaded from {}'.format(new))
                 self.parameters = None
@@ -76,6 +71,6 @@ class SetQMConfigTask(InstrumentTask):
         for i in self.parameters:
             params[i] = float(self.parameters[i])
 
-        config_to_apply = module_with_config.get_config(self.parameters)
+        config_to_apply = module_with_config.get_config(params)
 
         self.driver.set_config(config_to_apply)
