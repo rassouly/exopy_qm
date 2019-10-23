@@ -75,7 +75,7 @@ class ExecuteProgramTask(InstrumentTask):
         # Convert all the parameters to floats
         params = {}
         for i in self.parameters:
-            params[i] = float(self.parameters[i])
+            params[i] = float(self.format_and_eval_string(self.parameters[i]))
 
         program_to_execute = module_with_program.get_prog(params)
 

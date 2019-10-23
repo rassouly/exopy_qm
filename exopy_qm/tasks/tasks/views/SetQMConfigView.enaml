@@ -6,6 +6,9 @@ from enaml.widgets.api import (Label, Field, ToolButton, FileDialogEx, Container
 from enaml.stdlib.fields import Field
 from enaml.layout.api import hbox, vbox, spacer, align
 from exopy.app.icons.api import get_icon
+from exopy.tasks.api import EVALUATER_TOOLTIP
+from exopy.utils.widgets.qt_completers import QtLineCompleter
+
 
 from .base_instr_view import InstrView
 
@@ -48,8 +51,11 @@ enamldef SetQMConfigView(InstrView): view:
                 padding = 2
                 Label: label_loop:
                     text = loop_item
-                Field: field_loop:
+                QtLineCompleter: field_loop:
+                    hug_width = 'ignore'
                     text = task.parameters[loop_item]
                     text >> task.parameters[loop_item]
+                    entries_updater << task.list_accessible_database_entries
+                    tool_tip = EVALUATER_TOOLTIP
                 Label: label_comment:
                     text = task.comments[loop_item]
