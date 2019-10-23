@@ -2,3 +2,4 @@ dist/
 build/
 __enamlcache__/
 __pycache__/
+exopy_qm.egg-info/

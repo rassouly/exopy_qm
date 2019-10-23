@@ -19,14 +19,13 @@ class SetQMConfigTask(InstrumentTask):
     #: Dictionary containing all the parameters used in the configuration
     parameters = Typed(dict).tag(pref=True)
 
-    #: Dictionary containing all the parameters used in the configuration
+    #: Dictionary containing the comments for the parameters used in the configuration
     comments = Typed(dict).tag(pref=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def _post_setattr_path_to_config_file(self, old, new):
-        self.parameters = {}
         self.comments = {}
 
         if new:
@@ -46,16 +45,22 @@ class SetQMConfigTask(InstrumentTask):
                 # find the default values and comments
                 for i in params:
                     if len(params[i]) == 1:
-                        tmp[i] = str(params[i])
+                        if i not in self.parameters:
+                            tmp[i] = str(params[i])
+                        else:
+                            tmp[i] = self.parameters[i]
                         self.comments = ''
                     else:
-                        tmp[i] = str(params[i][0])
+                        if i not in self.parameters:
+                            tmp[i] = str(params[i][0])
+                        else:
+                            tmp[i] = self.parameters[i]
                         self.comments[i] = str(params[i][1])
                 self.parameters = tmp
 
             except:
-                print('Config cannot be loaded from {}'.format(new))
-                self.parameters = None
+                print('Config cannot be loaded from {}\n'.format(new))
+                self.parameters = {}
 
     def perform(self):
         directory = get_directory_from_path(self.path_to_config_file)
@@ -69,7 +74,7 @@ class SetQMConfigTask(InstrumentTask):
         # Convert all the parameters to floats
         params = {}
         for i in self.parameters:
-            params[i] = float(self.parameters[i])
+            params[i] = float(self.format_and_eval_string(self.parameters[i]))
 
         config_to_apply = module_with_config.get_config(params)
 
